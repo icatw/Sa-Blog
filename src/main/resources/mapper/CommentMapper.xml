@@ -1,0 +1,253 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.icatw.blog.mapper.CommentMapper">
+    <resultMap type="cn.icatw.blog.domain.entity.Comment" id="CommentMap">
+        <result property="id" column="id" jdbcType="INTEGER"/>
+        <result property="userId" column="user_id" jdbcType="INTEGER"/>
+        <result property="articleId" column="article_id" jdbcType="INTEGER"/>
+        <result property="talkId" column="talk_id" jdbcType="INTEGER"/>
+        <result property="commentContent" column="comment_content" jdbcType="VARCHAR"/>
+        <result property="replyUserId" column="reply_user_id" jdbcType="INTEGER"/>
+        <result property="parentId" column="parent_id" jdbcType="INTEGER"/>
+        <result property="type" column="type" jdbcType="INTEGER"/>
+        <result property="isDelete" column="is_delete" jdbcType="INTEGER"/>
+        <result property="isReview" column="is_review" jdbcType="INTEGER"/>
+        <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
+        <result property="updateTime" column="update_time" jdbcType="TIMESTAMP"/>
+    </resultMap>
+    <!-- 基本字段 -->
+    <sql id="Base_Column_List">
+        id ,
+                 user_id ,
+                 article_id ,
+                 talk_id ,
+                 comment_content ,
+                 reply_user_id ,
+                 parent_id ,
+                 type ,
+                 is_delete ,
+                 is_review ,
+                 create_time ,
+                 update_time ,
+    </sql>
+    <!--查询指定行数据-->
+    <select id="selectCommentList" resultMap="CommentMap">
+        select
+        <include refid="Base_Column_List"/>
+
+        from tb_comment
+        <where>
+            <if test="id != null">
+                and id = #{id}
+            </if>
+            <if test="userId != null">
+                and user_id = #{userId}
+            </if>
+            <if test="articleId != null">
+                and article_id = #{articleId}
+            </if>
+            <if test="talkId != null">
+                and talk_id = #{talkId}
+            </if>
+            <if test="commentContent != null and commentContent != ''">
+                and comment_content = #{commentContent}
+            </if>
+            <if test="replyUserId != null">
+                and reply_user_id = #{replyUserId}
+            </if>
+            <if test="parentId != null">
+                and parent_id = #{parentId}
+            </if>
+            <if test="type != null">
+                and type = #{type}
+            </if>
+            <if test="isDelete != null">
+                and is_delete = #{isDelete}
+            </if>
+            <if test="isReview != null">
+                and is_review = #{isReview}
+            </if>
+            <if test="createTime != null">
+                and create_time = #{createTime}
+            </if>
+            <if test="updateTime != null">
+                and update_time = #{updateTime}
+            </if>
+        </where>
+    </select>
+
+    <select id="countCommentDTO" resultType="java.lang.Integer">
+        SELECT count(1)
+        from tb_comment c
+                 LEFT JOIN tb_user u ON c.user_id = u.id
+        <where>
+            c.is_delete = 0
+            <if test="condition.type != null">
+                and c.type = #{condition.type}
+            </if>
+            <if test="condition.isReview != null">
+                and c.is_review = #{condition.isReview}
+            </if>
+            <if test="condition.keywords != null">
+                and u.nickname like concat('%', #{condition.keywords}, '%')
+            </if>
+        </where>
+    </select>
+
+    <select id="listCommentBackDTO" resultType="cn.icatw.blog.domain.dto.CommentBackDTO">
+        SELECT c.id,
+               u.avatar,
+               u.nickname,
+               r.nickname AS reply_nickname,
+               a.article_title,
+               c.comment_content,
+               c.type,
+               c.create_time,
+               c.is_review
+        FROM tb_comment c
+                 LEFT JOIN tb_article a ON c.article_id = a.id
+                 LEFT JOIN tb_user u ON c.user_id = u.id
+                 LEFT JOIN tb_user r ON c.reply_user_id = r.id
+        <where>
+            c.is_delete = 0
+            <if test="condition.type != null">
+                and c.type = #{condition.type}
+            </if>
+            <if test="condition.isReview != null">
+                and c.is_review = #{condition.isReview}
+            </if>
+            <if test="condition.keywords != null">
+                and u.nickname like concat('%', #{condition.keywords}, '%')
+            </if>
+        </where>
+        ORDER BY id DESC
+        LIMIT #{current},#{size}
+    </select>
+
+    <select id="listCommentCountByTalkIds" resultType="cn.icatw.blog.domain.dto.CommentCountDTO">
+        SELECT
+        talk_id as id,
+        COUNT( 1 ) AS comment_count
+        FROM
+        tb_comment
+        WHERE
+        talk_id IN
+        <foreach open="(" collection="talkIdList" item="talkId" separator="," close=")">
+            #{talkId}
+        </foreach>
+        AND
+        parent_id IS NULL
+        and is_delete = 0
+        and is_review = 1
+        GROUP BY
+        talk_id
+    </select>
+
+    <select id="listComments" resultType="cn.icatw.blog.domain.dto.CommentDTO">
+        SELECT
+        u.nickname,
+        u.avatar,
+        u.web_site,
+        c.user_id,
+        c.id,
+        c.comment_content,
+        c.create_time
+        FROM
+        tb_comment c
+        JOIN tb_user u ON c.user_id = u.id
+        WHERE
+        <if test="commentVO.type == 1">
+            article_id = #{commentVO.articleId}
+        </if>
+        <if test="commentVO.type == 2">
+            type = 2
+        </if>
+        <if test="commentVO.type == 3">
+            talk_id = #{commentVO.talkId}
+        </if>
+        AND c.is_review = 1
+        AND parent_id IS NULL
+        ORDER BY
+        c.id DESC
+        LIMIT #{current},#{size}
+    </select>
+
+    <select id="listReplies" resultType="cn.icatw.blog.domain.dto.ReplyDTO">
+        SELECT
+        *
+        FROM
+        (
+        SELECT
+        c.user_id,
+        u.nickname,
+        u.avatar,
+        u.web_site,
+        c.reply_user_id,
+        r.nickname AS reply_nickname,
+        r.web_site AS reply_web_site,
+        c.id,
+        c.parent_id,
+        c.comment_content,
+        c.create_time,
+        row_number () over ( PARTITION BY parent_id ORDER BY c.create_time ) row_num
+        FROM
+        tb_comment c
+        JOIN tb_user u ON c.user_id = u.id
+        JOIN tb_user r ON c.reply_user_id = r.id
+        WHERE
+        c.is_review = 1
+        AND
+        parent_id IN
+        (
+        <foreach collection="commentIdList" item="commentId" separator=",">
+            #{commentId}
+        </foreach>
+        )
+        ) t
+        WHERE
+        4 > row_num
+    </select>
+
+    <select id="listReplyCountByCommentId" resultType="cn.icatw.blog.domain.dto.ReplyCountDTO">
+        SELECT
+        parent_id as comment_id,
+        count(1) AS reply_count
+        FROM
+        tb_comment
+        WHERE
+        is_review = 1
+        AND
+        parent_id IN
+        <foreach open="(" collection="commentIdList" item="commentId" separator="," close=")">
+            #{commentId}
+        </foreach>
+        GROUP BY
+        parent_id
+    </select>
+
+    <select id="listRepliesByCommentId" resultType="cn.icatw.blog.domain.dto.ReplyDTO">
+        SELECT
+            c.user_id,
+            u.nickname,
+            u.avatar,
+            u.web_site,
+            c.reply_user_id,
+            r.nickname as reply_nickname,
+            r.web_site as reply_web_site,
+            c.id,
+            c.parent_id,
+            c.comment_content,
+            c.create_time
+        FROM
+            tb_comment c
+                JOIN tb_user u ON c.user_id = u.id
+                JOIN tb_user r ON c.reply_user_id = r.id
+        WHERE
+            c.is_review = 1
+          AND
+            parent_id =#{commentId}
+        ORDER BY
+            c.id ASC
+        LIMIT #{current}, #{size}
+    </select>
+</mapper>

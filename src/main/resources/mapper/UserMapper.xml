@@ -1,0 +1,160 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.icatw.blog.mapper.UserMapper">
+
+    <resultMap type="cn.icatw.blog.domain.entity.User" id="UserMap">
+        <result property="id" column="id" jdbcType="INTEGER"/>
+        <result property="username" column="username" jdbcType="VARCHAR"/>
+        <result property="password" column="password" jdbcType="VARCHAR"/>
+        <result property="loginType" column="login_type" jdbcType="INTEGER"/>
+        <result property="ipAddress" column="ip_address" jdbcType="VARCHAR"/>
+        <result property="ipSource" column="ip_source" jdbcType="VARCHAR"/>
+        <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
+        <result property="updateTime" column="update_time" jdbcType="TIMESTAMP"/>
+        <result property="lastLoginTime" column="last_login_time" jdbcType="TIMESTAMP"/>
+        <result property="nickname" column="nickname" jdbcType="VARCHAR"/>
+        <result property="avatar" column="avatar" jdbcType="VARCHAR"/>
+        <result property="intro" column="intro" jdbcType="VARCHAR"/>
+        <result property="webSite" column="web_site" jdbcType="VARCHAR"/>
+        <result property="isDisable" column="is_disable" jdbcType="INTEGER"/>
+    </resultMap>
+    <resultMap id="UserBackMap" type="cn.icatw.blog.domain.dto.UserBackDTO">
+        <id column="id" property="id"/>
+        <result column="user_info_id" property="userInfoId"/>
+        <result column="avatar" property="avatar"/>
+        <result column="nickname" property="nickname"/>
+        <result column="login_type" property="loginType"/>
+        <result column="ip_address" property="ipAddress"/>
+        <result column="ip_source" property="ipSource"/>
+        <result column="create_time" property="createTime"/>
+        <result column="last_login_time" property="lastLoginTime"/>
+        <result column="is_disable" property="isDisable"/>
+        <collection property="roleList" ofType="cn.icatw.blog.domain.dto.UserRoleDTO">
+            <id column="role_id" property="id"/>
+            <id column="role_name" property="roleName"/>
+        </collection>
+    </resultMap>
+ <!-- 基本字段 -->
+    <sql id="Base_Column_List">
+                 id ,
+                 username ,
+                 password ,
+                 login_type ,
+                 ip_address ,
+                 ip_source ,
+                 create_time ,
+                 update_time ,
+                 last_login_time ,
+                 nickname ,
+                 avatar ,
+                 intro ,
+                 web_site ,
+                 is_disable ,
+    </sql>
+<!--查询指定行数据-->
+    <select id="selectUserList" resultMap="UserMap">
+        select
+      <include refid="Base_Column_List"/>
+
+        from tb_user
+        <where>
+            <if test="id != null">
+                and id = #{id}
+            </if>
+            <if test="username != null and username != ''">
+                and username = #{username}
+            </if>
+            <if test="password != null and password != ''">
+                and password = #{password}
+            </if>
+            <if test="loginType != null">
+                and login_type = #{loginType}
+            </if>
+            <if test="ipAddress != null and ipAddress != ''">
+                and ip_address = #{ipAddress}
+            </if>
+            <if test="ipSource != null and ipSource != ''">
+                and ip_source = #{ipSource}
+            </if>
+            <if test="createTime != null">
+                and create_time = #{createTime}
+            </if>
+            <if test="updateTime != null">
+                and update_time = #{updateTime}
+            </if>
+            <if test="lastLoginTime != null">
+                and last_login_time = #{lastLoginTime}
+            </if>
+            <if test="nickname != null and nickname != ''">
+                and nickname = #{nickname}
+            </if>
+            <if test="avatar != null and avatar != ''">
+                and avatar = #{avatar}
+            </if>
+            <if test="intro != null and intro != ''">
+                and intro = #{intro}
+            </if>
+            <if test="webSite != null and webSite != ''">
+                and web_site = #{webSite}
+            </if>
+            <if test="isDisable != null">
+                and is_disable = #{isDisable}
+            </if>
+        </where>
+       </select>
+
+    <select id="getUserBySocial" resultMap="UserMap">
+        select tu.*
+        from tb_social_user tsu
+                 left join tb_social_user_auth tsua on tsu.id = tsua.social_user_id
+                 left join tb_user tu on tu.id = tsua.user_id
+        where tsu.source = #{source}
+          and tsu.uuid = #{uuid};
+    </select>
+
+    <select id="countUser" resultType="java.lang.Integer">
+        SELECT
+        count( 1 )
+        FROM
+        tb_user
+        <where>
+            <if test="condition.keywords != null">
+                nickname like concat('%',#{condition.keywords},'%')
+            </if>
+            <if test="condition.loginType != null">
+                and login_type = #{condition.loginType}
+            </if>
+        </where>
+    </select>
+
+    <select id="listUsers" resultMap="UserBackMap">
+        SELECT
+        ui.id,
+        avatar,
+        nickname,
+        login_type,
+        r.id as role_id,
+        role_name,
+        ip_address,
+        ip_source,
+        ui.create_time,
+        last_login_time,
+        ui.is_disable
+        FROM
+        (
+        select * from
+        tb_user tu
+        <where>
+            <if test="condition.loginType != null">
+                login_type = #{condition.loginType}
+            </if>
+            <if test="condition.keywords != null">
+                and nickname like concat('%',#{condition.keywords},'%')
+            </if>
+        </where>
+        LIMIT #{current},#{size}
+        ) ui
+        LEFT JOIN tb_user_role ur ON ui.id = ur.user_id
+        LEFT JOIN tb_role r ON ur.role_id = r.id
+    </select>
+</mapper>

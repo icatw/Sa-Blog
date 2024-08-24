@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.icatw.blog.mapper.OperationLogMapper">
+    <resultMap type="cn.icatw.blog.domain.entity.OperationLog" id="OperationLogMap">
+        <result property="id" column="id" jdbcType="INTEGER"/>
+        <result property="optModule" column="opt_module" jdbcType="VARCHAR"/>
+        <result property="optType" column="opt_type" jdbcType="VARCHAR"/>
+        <result property="optUrl" column="opt_url" jdbcType="VARCHAR"/>
+        <result property="optMethod" column="opt_method" jdbcType="VARCHAR"/>
+        <result property="optDesc" column="opt_desc" jdbcType="VARCHAR"/>
+        <result property="requestParam" column="request_param" jdbcType="VARCHAR"/>
+        <result property="requestMethod" column="request_method" jdbcType="VARCHAR"/>
+        <result property="responseData" column="response_data" jdbcType="VARCHAR"/>
+        <result property="userId" column="user_id" jdbcType="INTEGER"/>
+        <result property="nickname" column="nickname" jdbcType="VARCHAR"/>
+        <result property="ipAddress" column="ip_address" jdbcType="VARCHAR"/>
+        <result property="ipSource" column="ip_source" jdbcType="VARCHAR"/>
+        <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
+        <result property="updateTime" column="update_time" jdbcType="TIMESTAMP"/>
+    </resultMap>
+    <!-- 基本字段 -->
+    <sql id="Base_Column_List">
+        id,
+        opt_module,
+        opt_type,
+        opt_url,
+        opt_method,
+        opt_desc,
+        request_param,
+        request_method,
+        response_data,
+        user_id,
+        nickname,
+        ip_address,
+        ip_source,
+        create_time,
+        update_time,
+    </sql>
+    <!--查询指定行数据-->
+    <select id="selectOperationLogList" resultMap="OperationLogMap">
+        select
+        <include refid="Base_Column_List"/>
+
+        from tb_operation_log
+        <where>
+            <if test="id != null">
+                and id = #{id}
+            </if>
+            <if test="optModule != null and optModule != ''">
+                and opt_module = #{optModule}
+            </if>
+            <if test="optType != null and optType != ''">
+                and opt_type = #{optType}
+            </if>
+            <if test="optUrl != null and optUrl != ''">
+                and opt_url = #{optUrl}
+            </if>
+            <if test="optMethod != null and optMethod != ''">
+                and opt_method = #{optMethod}
+            </if>
+            <if test="optDesc != null and optDesc != ''">
+                and opt_desc = #{optDesc}
+            </if>
+            <if test="requestParam != null and requestParam != ''">
+                and request_param = #{requestParam}
+            </if>
+            <if test="requestMethod != null and requestMethod != ''">
+                and request_method = #{requestMethod}
+            </if>
+            <if test="responseData != null and responseData != ''">
+                and response_data = #{responseData}
+            </if>
+            <if test="userId != null">
+                and user_id = #{userId}
+            </if>
+            <if test="nickname != null and nickname != ''">
+                and nickname = #{nickname}
+            </if>
+            <if test="ipAddress != null and ipAddress != ''">
+                and ip_address = #{ipAddress}
+            </if>
+            <if test="ipSource != null and ipSource != ''">
+                and ip_source = #{ipSource}
+            </if>
+            <if test="createTime != null">
+                and create_time = #{createTime}
+            </if>
+            <if test="updateTime != null">
+                and update_time = #{updateTime}
+            </if>
+        </where>
+    </select>
+</mapper>

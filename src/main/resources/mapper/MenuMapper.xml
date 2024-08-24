@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.icatw.blog.mapper.MenuMapper">
+    <resultMap type="cn.icatw.blog.domain.entity.Menu" id="MenuMap">
+        <result property="id" column="id" jdbcType="INTEGER"/>
+        <result property="name" column="name" jdbcType="VARCHAR"/>
+        <result property="path" column="path" jdbcType="VARCHAR"/>
+        <result property="component" column="component" jdbcType="VARCHAR"/>
+        <result property="icon" column="icon" jdbcType="VARCHAR"/>
+        <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
+        <result property="updateTime" column="update_time" jdbcType="TIMESTAMP"/>
+        <result property="orderNum" column="order_num" jdbcType="INTEGER"/>
+        <result property="parentId" column="parent_id" jdbcType="INTEGER"/>
+        <result property="isHidden" column="is_hidden" jdbcType="INTEGER"/>
+    </resultMap>
+    <!-- 基本字段 -->
+    <sql id="Base_Column_List">
+        id ,
+                 name ,
+                 path ,
+                 component ,
+                 icon ,
+                 create_time ,
+                 update_time ,
+                 order_num ,
+                 parent_id ,
+                 is_hidden ,
+    </sql>
+    <!--查询指定行数据-->
+    <select id="selectMenuList" resultMap="MenuMap">
+        select
+        <include refid="Base_Column_List"/>
+
+        from tb_menu
+        <where>
+            <if test="id != null">
+                and id = #{id}
+            </if>
+            <if test="name != null and name != ''">
+                and name = #{name}
+            </if>
+            <if test="path != null and path != ''">
+                and path = #{path}
+            </if>
+            <if test="component != null and component != ''">
+                and component = #{component}
+            </if>
+            <if test="icon != null and icon != ''">
+                and icon = #{icon}
+            </if>
+            <if test="createTime != null">
+                and create_time = #{createTime}
+            </if>
+            <if test="updateTime != null">
+                and update_time = #{updateTime}
+            </if>
+            <if test="orderNum != null">
+                and order_num = #{orderNum}
+            </if>
+            <if test="parentId != null">
+                and parent_id = #{parentId}
+            </if>
+            <if test="hidden != null">
+                and is_hidden = #{hidden}
+            </if>
+        </where>
+    </select>
+
+    <select id="listMenusByUserId" resultMap="MenuMap">
+        select distinct m.id,
+                        m.name,
+                        m.path,
+                        m.component,
+                        m.icon,
+                        m.order_num,
+                        m.parent_id,
+                        m.is_hidden
+        from tb_user_role ur
+                 left join tb_role_menu rm on ur.role_id = rm.role_id
+                 left join tb_menu m on rm.menu_id = m.id
+        where ur.user_id = #{userId}
+          AND m.id IS NOT NULL
+    </select>
+</mapper>

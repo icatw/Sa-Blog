@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.icatw.blog.mapper.RoleMenuMapper">
+    <resultMap type="cn.icatw.blog.domain.entity.RoleMenu" id="RoleMenuMap">
+        <result property="id" column="id" jdbcType="INTEGER"/>
+        <result property="roleId" column="role_id" jdbcType="INTEGER"/>
+        <result property="menuId" column="menu_id" jdbcType="INTEGER"/>
+    </resultMap>
+    <!-- 基本字段 -->
+    <sql id="Base_Column_List">
+        id ,
+                 role_id ,
+                 menu_id ,
+    </sql>
+    <!--查询指定行数据-->
+    <select id="selectRoleMenuList" resultMap="RoleMenuMap">
+        select
+        <include refid="Base_Column_List"/>
+
+        from tb_role_menu
+        <where>
+            <if test="id != null">
+                and id = #{id}
+            </if>
+            <if test="roleId != null">
+                and role_id = #{roleId}
+            </if>
+            <if test="menuId != null">
+                and menu_id = #{menuId}
+            </if>
+        </where>
+    </select>
+</mapper>

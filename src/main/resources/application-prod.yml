@@ -1,0 +1,25 @@
+# 生产环境配置
+baseUrl: http://icatw.top
+
+spring:
+  datasource:
+    url: jdbc:mysql://xxx/blog_init?serverTimezone=Asia/Shanghai&allowMultiQueries=true&allowPublicKeyRetrieval=true&useSSL=false
+    username: root
+    password: xxx
+
+  data:
+    redis:
+      database: 1
+      timeout: 20s
+      port: 6379
+      host: xxx
+      password: xxx
+
+  rabbitmq:
+    host: xxx
+    port: 5672
+    username: xxx
+    password: xxx
+ai:
+  tongyi:
+    appKey: xxxx

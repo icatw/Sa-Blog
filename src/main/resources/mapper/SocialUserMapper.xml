@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.icatw.blog.mapper.SocialUserMapper">
+    <resultMap type="cn.icatw.blog.domain.entity.SocialUser" id="SocialUserMap">
+        <result property="id" column="id" jdbcType="VARCHAR"/>
+        <result property="uuid" column="uuid" jdbcType="VARCHAR"/>
+        <result property="source" column="source" jdbcType="INTEGER"/>
+        <result property="accessToken" column="access_token" jdbcType="VARCHAR"/>
+    </resultMap>
+    <!-- 基本字段 -->
+    <sql id="Base_Column_List">
+        id ,
+                 uuid ,
+                 source ,
+                 access_token ,
+    </sql>
+    <!--查询指定行数据-->
+    <select id="selectSocialUserList" resultMap="SocialUserMap">
+        select
+        <include refid="Base_Column_List"/>
+
+        from tb_social_user
+        <where>
+            <if test="id != null and id != ''">
+                and id = #{id}
+            </if>
+            <if test="uuid != null and uuid != ''">
+                and uuid = #{uuid}
+            </if>
+            <if test="source != null">
+                and source = #{source}
+            </if>
+            <if test="accessToken != null and accessToken != ''">
+                and access_token = #{accessToken}
+            </if>
+        </where>
+    </select>
+</mapper>

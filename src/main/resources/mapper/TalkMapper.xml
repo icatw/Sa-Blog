@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.icatw.blog.mapper.TalkMapper">
+    <resultMap type="cn.icatw.blog.domain.entity.Talk" id="TalkMap">
+        <result property="id" column="id" jdbcType="INTEGER"/>
+        <result property="userId" column="user_id" jdbcType="INTEGER"/>
+        <result property="content" column="content" jdbcType="VARCHAR"/>
+        <result property="images" column="images" jdbcType="VARCHAR"/>
+        <result property="isTop" column="is_top" jdbcType="INTEGER"/>
+        <result property="status" column="status" jdbcType="INTEGER"/>
+        <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
+        <result property="updateTime" column="update_time" jdbcType="TIMESTAMP"/>
+    </resultMap>
+    <!-- 基本字段 -->
+    <sql id="Base_Column_List">
+        id ,
+                 user_id ,
+                 content ,
+                 images ,
+                 is_top ,
+                 status ,
+                 create_time ,
+                 update_time ,
+    </sql>
+    <!--查询指定行数据-->
+    <select id="selectTalkList" resultMap="TalkMap">
+        select
+        <include refid="Base_Column_List"/>
+
+        from tb_talk
+        <where>
+            <if test="id != null">
+                and id = #{id}
+            </if>
+            <if test="userId != null">
+                and user_id = #{userId}
+            </if>
+            <if test="content != null and content != ''">
+                and content = #{content}
+            </if>
+            <if test="images != null and images != ''">
+                and images = #{images}
+            </if>
+            <if test="isTop != null">
+                and is_top = #{isTop}
+            </if>
+            <if test="status != null">
+                and status = #{status}
+            </if>
+            <if test="createTime != null">
+                and create_time = #{createTime}
+            </if>
+            <if test="updateTime != null">
+                and update_time = #{updateTime}
+            </if>
+        </where>
+    </select>
+
+    <select id="listTalks" resultType="cn.icatw.blog.domain.dto.TalkDTO">
+        SELECT
+            t.id,
+            nickname,
+            avatar,
+            content,
+            images,
+            t.is_top,
+            t.create_time
+        FROM
+            tb_talk t
+                JOIN tb_user ui ON t.user_id = ui.id
+        WHERE
+            t.status = 1
+        ORDER BY
+            t.is_top DESC,
+            t.id DESC
+        LIMIT #{current},#{size}
+    </select>
+
+    <select id="getTalkById" resultType="cn.icatw.blog.domain.dto.TalkDTO">
+        SELECT
+            t.id,
+            nickname,
+            avatar,
+            content,
+            images,
+            t.create_time
+        FROM
+            tb_talk t
+                JOIN tb_user ui ON t.user_id = ui.id
+        WHERE
+            t.id = #{talkId}
+          AND t.status = 1
+    </select>
+
+    <select id="listBackTalks" resultType="cn.icatw.blog.domain.dto.TalkBackDTO">
+        SELECT
+        t.id,
+        nickname,
+        avatar,
+        content,
+        images,
+        t.is_top,
+        t.status,
+        t.create_time
+        FROM
+        tb_talk t
+        JOIN tb_user ui ON t.user_id = ui.id
+        <where>
+            <if test="params.status != null">
+                t.status = #{params.status}
+            </if>
+        </where>
+        ORDER BY
+        t.is_top DESC,
+        t.id DESC
+        LIMIT #{current},#{size}
+    </select>
+
+    <select id="getBackTalkById" resultType="cn.icatw.blog.domain.dto.TalkBackDTO">
+    </select>
+</mapper>

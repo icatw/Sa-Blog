@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.icatw.blog.mapper.PhotoAlbumMapper">
+    <resultMap type="cn.icatw.blog.domain.entity.PhotoAlbum" id="PhotoAlbumMap">
+        <result property="id" column="id" jdbcType="INTEGER"/>
+        <result property="albumName" column="album_name" jdbcType="VARCHAR"/>
+        <result property="albumDesc" column="album_desc" jdbcType="VARCHAR"/>
+        <result property="albumCover" column="album_cover" jdbcType="VARCHAR"/>
+        <result property="isDelete" column="is_delete" jdbcType="INTEGER"/>
+        <result property="status" column="status" jdbcType="INTEGER"/>
+        <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
+        <result property="updateTime" column="update_time" jdbcType="TIMESTAMP"/>
+    </resultMap>
+    <!-- 基本字段 -->
+    <sql id="Base_Column_List">
+        id ,
+                 album_name ,
+                 album_desc ,
+                 album_cover ,
+                 is_delete ,
+                 status ,
+                 create_time ,
+                 update_time ,
+    </sql>
+    <!--查询指定行数据-->
+    <select id="selectPhotoAlbumList" resultMap="PhotoAlbumMap">
+        select
+        <include refid="Base_Column_List"/>
+
+        from tb_photo_album
+        <where>
+            <if test="id != null">
+                and id = #{id}
+            </if>
+            <if test="albumName != null and albumName != ''">
+                and album_name = #{albumName}
+            </if>
+            <if test="albumDesc != null and albumDesc != ''">
+                and album_desc = #{albumDesc}
+            </if>
+            <if test="albumCover != null and albumCover != ''">
+                and album_cover = #{albumCover}
+            </if>
+            <if test="isDelete != null">
+                and is_delete = #{isDelete}
+            </if>
+            <if test="status != null">
+                and status = #{status}
+            </if>
+            <if test="createTime != null">
+                and create_time = #{createTime}
+            </if>
+            <if test="updateTime != null">
+                and update_time = #{updateTime}
+            </if>
+        </where>
+    </select>
+
+    <select id="listPhotoAlbumBacks" resultType="cn.icatw.blog.domain.dto.PhotoAlbumBackDTO">
+        SELECT
+        pa.id,
+        album_name,
+        album_desc,
+        album_cover,
+        COUNT( a.id ) AS photo_count,
+        status
+        FROM
+        (
+        SELECT
+        id,
+        album_name,
+        album_desc,
+        album_cover,
+        status
+        FROM
+        tb_photo_album
+        WHERE
+        is_delete = 0
+        <if test="condition.keywords != null">
+            and album_name like concat('%',#{condition.keywords},'%')
+        </if>
+        ORDER BY
+        id desc
+        LIMIT #{current},#{size}
+        ) pa
+        LEFT JOIN
+        (
+        SELECT
+        id,
+        album_id
+        FROM
+        tb_photo
+        WHERE
+        is_delete = 0
+        )
+        a ON pa.id = a.album_id
+        GROUP BY
+        pa.id
+    </select>
+</mapper>

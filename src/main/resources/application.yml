@@ -1,0 +1,102 @@
+# 通用配置
+spring:
+  application:
+    name: Sa-Blog
+  servlet:
+    multipart:
+      max-file-size: 2MB
+      max-request-size: 5MB
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+  data:
+    redis:
+      lettuce:
+        pool:
+          max-active: 200
+          max-wait: -1ms
+          max-idle: 20
+          min-idle: 0
+  # 指定当前激活的配置文件
+  profiles:
+    active: local
+  # 邮件配置
+  mail:
+    host: smtp.qq.com
+    username: xxx
+    password: xxx
+    port: 587
+  devtools:
+    restart:
+      enabled: false
+
+# sa-token配置
+sa-token:
+  token-name: satoken
+  timeout: 2592000
+  active-timeout: -1
+  is-concurrent: true
+  is-share: true
+  token-style: uuid
+  is-log: true
+
+# 日志配置
+logging:
+  config: classpath:logback.xml
+  charset:
+    console: utf-8
+    file: utf-8
+  logback:
+    rollingpolicy:
+      max-file-size: 20MB
+
+# Swagger配置
+springdoc:
+  swagger-ui:
+    path: /swagger-ui.html
+    tags-sorter: alpha
+    operations-sorter: alpha
+  api-docs:
+    path: /v3/api-docs
+  group-configs:
+    - group: 'default'
+      paths-to-match: '/**'
+      packages-to-scan: cn.icatw.blog.controller
+
+# Knife4j配置
+knife4j:
+  enable: true
+  setting:
+    language: zh_cn
+
+# MyBatis Plus配置
+mybatis-plus:
+  configuration:
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+  global-config:
+    db-config:
+      logic-delete-field: isDelete
+      logic-delete-value: 1
+      logic-not-delete-value: 0
+      id-type: auto
+
+# 搜索配置
+search:
+  mode: mysql
+
+# 文件上传配置
+upload:
+  mode: oss
+  local:
+    url: xxx
+    path: xxx
+  oss:
+    url: xxx
+    endpoint: xxx
+    accessKeyId: xxx
+    accessKeySecret: xxx
+    bucketName: icatw-blog
+
+website:
+  url: http://icatw.top
+server:
+  port: 8080

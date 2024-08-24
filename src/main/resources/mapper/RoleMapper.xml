@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.icatw.blog.mapper.RoleMapper">
+    <resultMap type="cn.icatw.blog.domain.dto.RoleDTO" id="RoleMap">
+        <result property="id" column="id" jdbcType="INTEGER"/>
+        <result property="roleName" column="role_name" jdbcType="VARCHAR"/>
+        <result property="roleLabel" column="role_label" jdbcType="VARCHAR"/>
+        <result property="isDisable" column="is_disable" jdbcType="INTEGER"/>
+        <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
+        <collection property="resourceIdList" ofType="java.lang.Integer">
+            <constructor>
+                <arg column="resource_id"/>
+            </constructor>
+        </collection>
+        <collection property="menuIdList" ofType="java.lang.Integer">
+            <constructor>
+                <arg column="menu_id"/>
+            </constructor>
+        </collection>
+    </resultMap>
+    <resultMap id="RolePermissionMap" type="cn.icatw.blog.domain.dto.ResourceRoleDTO">
+        <id column="id" property="id"/>
+        <result column="url" property="url"/>
+        <result column="request_method" property="requestMethod"/>
+        <collection property="roleList" ofType="java.lang.String">
+            <constructor>
+                <arg column="role_label"/>
+            </constructor>
+        </collection>
+    </resultMap>
+    <!-- 基本字段 -->
+    <sql id="Base_Column_List">
+        id,
+        role_name,
+        role_label,
+        is_disable,
+        create_time,
+        update_time,
+    </sql>
+
+    <select id="listRolesByUserInfoId" resultType="java.lang.String">
+        select tr.role_label
+        from tb_role tr
+                 left join tb_user_role tur on tr.id = tur.role_id
+        where tur.user_id = #{userInfoId}
+    </select>
+
+    <select id="listRoles" resultMap="RoleMap">
+        SELECT r.id,
+               role_name,
+               role_label,
+               r.create_time,
+               r.is_disable,
+               rr.resource_id,
+               rm.menu_id
+        FROM
+        (
+        SELECT id,
+               role_name,
+               role_label,
+               create_time,
+               is_disable
+        FROM tb_role
+        <where>
+            <if test="params.keywords != null">
+                role_name like concat('%', #{params.keywords}, '%')
+            </if>
+        </where>
+        LIMIT #{current}, #{size}
+        ) r
+            LEFT JOIN tb_role_resource rr ON r.id = rr.role_id
+            LEFT JOIN tb_role_menu rm on r.id = rm.role_id
+        ORDER BY r.id
+    </select>
+
+    <select id="listResourceRoles" resultMap="RolePermissionMap">
+        SELECT
+            re.id,
+            url,
+            request_method,
+            role_label
+        FROM
+            tb_resource re
+                LEFT JOIN tb_role_resource rep on re.id = rep.resource_id
+                LEFT JOIN tb_role r on rep.role_id = r.id
+        WHERE
+            parent_id is NOT NULL
+          AND is_anonymous = 0
+    </select>
+</mapper>

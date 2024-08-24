@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.icatw.blog.mapper.ResourceMapper">
+    <resultMap type="cn.icatw.blog.domain.entity.Resource" id="ResourceMap">
+        <result property="id" column="id" jdbcType="INTEGER"/>
+        <result property="resourceName" column="resource_name" jdbcType="VARCHAR"/>
+        <result property="url" column="url" jdbcType="VARCHAR"/>
+        <result property="requestMethod" column="request_method" jdbcType="VARCHAR"/>
+        <result property="parentId" column="parent_id" jdbcType="INTEGER"/>
+        <result property="isAnonymous" column="is_anonymous" jdbcType="TINYINT"/>
+        <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
+        <result property="updateTime" column="update_time" jdbcType="TIMESTAMP"/>
+    </resultMap>
+    <!-- 基本字段 -->
+    <sql id="Base_Column_List">
+        id ,
+                 resource_name ,
+                 url ,
+                 request_method ,
+                 parent_id ,
+                 is_anonymous ,
+                 create_time ,
+                 update_time ,
+    </sql>
+    <!--查询指定行数据-->
+    <select id="selectResourceList" resultMap="ResourceMap">
+        select
+        <include refid="Base_Column_List"/>
+
+        from tb_resource
+        <where>
+            <if test="id != null">
+                and id = #{id}
+            </if>
+            <if test="resourceName != null and resourceName != ''">
+                and resource_name = #{resourceName}
+            </if>
+            <if test="url != null and url != ''">
+                and url = #{url}
+            </if>
+            <if test="requestMethod != null and requestMethod != ''">
+                and request_method = #{requestMethod}
+            </if>
+            <if test="parentId != null">
+                and parent_id = #{parentId}
+            </if>
+            <if test="anonymous != null">
+                and is_anonymous = #{anonymous}
+            </if>
+            <if test="createTime != null">
+                and create_time = #{createTime}
+            </if>
+            <if test="updateTime != null">
+                and update_time = #{updateTime}
+            </if>
+        </where>
+    </select>
+</mapper>
