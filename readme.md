@@ -7,6 +7,7 @@
   </a>
 </p>
 
+
 <p align="center">
   <a target="_blank" href="https://github.com/ladidol/hexo-blog-satoken">
     <img src="https://img.shields.io/hexpm/l/plug.svg" alt="License"/>
@@ -21,12 +22,13 @@
   </a>
 </p>
 
+
 ## 在线地址
 
 - **个人主页：** [icatw.top](http://icatw.top)
 - **项目链接：** [blog.icatw.top](http://blog.icatw.top)
 - **后台链接：** [admin.icatw.top](http://admin.icatw.top)
-- **Github地址：** [ladidol/hexo-blog-satoken](https://github.com/ladidol/hexo-blog-satoken)
+- **Github地址：** [icatw/Sa-Blog](https://github.com/icatw/Sa-Blog/issues)
 
 ## 技术介绍
 
@@ -80,4 +82,48 @@ blog-springboot
 
 ## 项目截图
 
-<table align="center"> <tr> <td><img src="https://picgo-iamges.oss-cn-hangzhou.aliyuncs.com/img/image-20240824161845988.png" alt="项目截图1" style="max-width: 100%; height: auto;"/></td> <td><img src="https://picgo-iamges.oss-cn-hangzhou.aliyuncs.com/img/image-20240824161929300.png" alt="项目截图2" style="max-width: 100%; height: auto;"/></td> </tr> <tr> <td><img src="https://picgo-iamges.oss-cn-hangzhou.aliyuncs.com/img/image-20240824161943272.png" alt="项目截图3" style="max-width: 100%; height: auto;"/></td> <td><img src="https://picgo-iamges.oss-cn-hangzhou.aliyuncs.com/img/image-20240824162042865.png" alt="项目截图4" style="max-width: 100%; height: auto;"/></td> </tr> <tr> <td><img src="https://picgo-iamges.oss-cn-hangzhou.aliyuncs.com/img/image-20240824162109205.png" alt="项目截图5" style="max-width: 100%; height: auto;"/></td> <td><img src="https://picgo-iamges.oss-cn-hangzhou.aliyuncs.com/img/image-20240824162205169.png" alt="项目截图6" style="max-width: 100%; height: auto;"/></td> </tr> <tr> <td><img src="https://picgo-iamges.oss-cn-hangzhou.aliyuncs.com/img/image-20240824162228513.png" alt="项目截图7" style="max-width: 100%; height: auto;"/></td> <td><img src="https://picgo-iamges.oss-cn-hangzhou.aliyuncs.com/img/image-20240824162244487.png" alt="项目截图8" style="max-width: 100%; height: auto;"/></td> </tr> <tr> <td><img src="https://picgo-iamges.oss-cn-hangzhou.aliyuncs.com/img/image-20240824162308716.png" alt="项目截图9" style="max-width: 100%; height: auto;"/></td> <td><img src="https://picgo-iamges.oss-cn-hangzhou.aliyuncs.com/img/image-20240824162329195.png" alt="项目截图10" style="max-width: 100%; height: auto;"/></td> </tr> </table> ```
+<table align="center"> <tr> <td><img src="https://picgo-iamges.oss-cn-hangzhou.aliyuncs.com/img/image-20240824161845988.png" alt="项目截图1" style="max-width: 100%; height: auto;"/></td> <td><img src="https://picgo-iamges.oss-cn-hangzhou.aliyuncs.com/img/image-20240824161929300.png" alt="项目截图2" style="max-width: 100%; height: auto;"/></td> </tr> <tr> <td><img src="https://picgo-iamges.oss-cn-hangzhou.aliyuncs.com/img/image-20240824161943272.png" alt="项目截图3" style="max-width: 100%; height: auto;"/></td> <td><img src="https://picgo-iamges.oss-cn-hangzhou.aliyuncs.com/img/image-20240824162042865.png" alt="项目截图4" style="max-width: 100%; height: auto;"/></td> </tr> <tr> <td><img src="https://picgo-iamges.oss-cn-hangzhou.aliyuncs.com/img/image-20240824162109205.png" alt="项目截图5" style="max-width: 100%; height: auto;"/></td> <td><img src="https://picgo-iamges.oss-cn-hangzhou.aliyuncs.com/img/image-20240824162205169.png" alt="项目截图6" style="max-width: 100%; height: auto;"/></td> </tr> <tr> <td><img src="https://picgo-iamges.oss-cn-hangzhou.aliyuncs.com/img/image-20240824162228513.png" alt="项目截图7" style="max-width: 100%; height: auto;"/></td> <td><img src="https://picgo-iamges.oss-cn-hangzhou.aliyuncs.com/img/image-20240824162244487.png" alt="项目截图8" style="max-width: 100%; height: auto;"/></td> </tr> <tr> <td><img src="https://picgo-iamges.oss-cn-hangzhou.aliyuncs.com/img/image-20240824162308716.png" alt="项目截图9" style="max-width: 100%; height: auto;"/></td> <td><img src="https://picgo-iamges.oss-cn-hangzhou.aliyuncs.com/img/image-20240824162329195.png" alt="项目截图10" style="max-width: 100%; height: auto;"/></td> </tr> </table> 
+
+
+## 启动说明
+
+在启动项目之前，请按照以下步骤操作：
+
+1. **克隆项目**
+
+   ```bash
+   git clone https://github.com/icatw/Sa-Blog
+   cd your-project
+   ```
+
+2. **配置环境**
+
+    - 确保已安装 [Maven](https://maven.apache.org/)。
+    - 使用 [JDK 17](https://www.oracle.com/java/technologies/javase-jdk17-downloads.html) 进行编译和运行。
+    - 配置 [RabbitMQ](https://www.rabbitmq.com/download.html) 作为消息队列。
+
+3. **修改配置文件**
+
+    - 根据项目要求，修改 `application.yml` 或 `application.properties` 文件中的配置。确保正确配置数据库连接、RabbitMQ 设置等。
+
+4. **运行项目**
+
+    - 在 IDE 中，打开 `BlogApplication` 类。
+    - 右键点击 `BlogApplication` 类并选择 `Run`，或直接点击运行按钮。
+
+   ![image-20240824163556664](https://picgo-iamges.oss-cn-hangzhou.aliyuncs.com/img/image-20240824163556664.png)
+
+   > **提示**：第一次启动时，项目会自动创建并导入数据库文件，无需手动导入 SQL 文件。只需要确保配置文件设置正确即可。
+
+## 其他说明
+
+- **数据库**：第一次启动时，系统会自动创建必要的数据库表格和初始数据。
+- **日志**：启动后可以查看日志以确认项目是否成功启动并运行正常。
+- **问题**：如遇到问题，请参考 [常见问题解答](#) 或在 [Issues](https://github.com/icatw/Sa-Blog/issues) 中提交问题。
+
+如果需要进一步的帮助或有任何问题，请随时在 [GitHub Issues](https://github.com/icatw/Sa-Blog/issues) 中提问或联系项目维护者。
+
+与我联系：
+
+<img align=left src="https://picgo-iamges.oss-cn-hangzhou.aliyuncs.com/img/image-20240824165658509.png" alt="image-20240824165658509" style="zoom:25%;" />
+
